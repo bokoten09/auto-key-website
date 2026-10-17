@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -61,6 +60,7 @@
       background: #101a31;
       color: #a8bbdf;
       font-size: 14px;
+      word-break: break-all;
     }
 
     button {
@@ -79,6 +79,18 @@
       background: #4770ff;
     }
 
+    .key-box {
+      margin-top: 15px;
+      padding: 12px;
+      background: #0d1527;
+      border: 1px dashed #34466e;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 18px;
+      color: #00ffcc;
+      word-break: break-all;
+    }
+
     footer {
       margin-top: 22px;
       color: #8494b5;
@@ -92,13 +104,13 @@
     <div class="logo">🔑</div>
 
     <h1>AUTO KEY</h1>
-    <p>Hệ thống nhận key tự động</p>
+    <p>Hệ thống nhận key tự động qua GTraffic</p>
 
     <div class="status" id="status">
-      Hệ thống đã sẵn sàng
+      Đang kiểm tra trạng thái...
     </div>
 
-    <button id="receive" type="button">
+    <button id="actionBtn" type="button">
       NHẬN KEY
     </button>
 
@@ -106,11 +118,53 @@
   </main>
 
   <script>
-    document
-      .getElementById("receive")
-      .addEventListener("click", function () {
-        window.location.href = "https://gtraffic.io/8Qt59ER";
+    // URL Google Apps Script của bạn
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8vkndIDPQZXQTEUqHENL7vnR_YCJA0th_7FCta6s-kcDjUvbKn9EyQwPLLqwlwrqu/exec";
+    
+    // Token bí mật đồng bộ với bên Google Apps Script
+    const SECRET_TOKEN = "my_secret_token_123";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = urlParams.get("token");
+
+    const statusEl = document.getElementById("status");
+    const actionBtn = document.getElementById("actionBtn");
+
+    if (tokenFromUrl === SECRET_TOKEN) {
+      // Nếu người dùng đã vượt qua GTraffic và quay lại với đúng token
+      statusEl.innerHTML = "Xác thực thành công! Đang lấy key cho bạn...";
+      actionBtn.style.display = "none";
+
+      fetch(`${APPS_SCRIPT_URL}?action=get_key&token=${SECRET_TOKEN}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            statusEl.innerHTML = `
+              Nhận key thành công!<br>
+              <div class="key-box">${data.key}</div>
+            `;
+          } else {
+            statusEl.innerHTML = `<span style="color: #ff6b6b;">${data.message}</span>`;
+          }
+        })
+        .catch(error => {
+          statusEl.innerHTML = `<span style="color: #ff6b6b;">Lỗi kết nối đến máy chủ!</span>`;
+          console.error(error);
+        });
+
+    } else {
+      // Nếu là khách truy cập bình thường, hướng sang GTraffic
+      statusEl.innerHTML = "Vui lòng bấm nút bên dưới để vượt link và nhận key.";
+      actionBtn.addEventListener("click", function () {
+        // Cấu hình link GTraffic trỏ ngược lại trang GitHub Pages của bạn kèm token xác thực
+        // Thay 'https://ten-tai-khoan.github.io/ten-repo/' bằng link GitHub Pages thực tế của bạn
+        const currentWebsiteUrl = window.location.href.split('?')[0];
+        const gtrafficTarget = `${currentWebsiteUrl}?token=${SECRET_TOKEN}`;
+        
+        // Link GTraffic chuyển hướng kèm tham số redirect (hoặc tuỳ cấu hình GTraffic của bạn)
+        window.location.href = `https://gtraffic.io/8Qt59ER?redirect=${encodeURIComponent(gtrafficTarget)}`;
       });
+    }
   </script>
 </body>
 </html>
