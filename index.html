@@ -5,8 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Auto Key - Nhận Key</title>
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -17,6 +21,7 @@
       color: white;
       background: radial-gradient(circle at top, #243b75, #080d1b 65%);
     }
+
     .card {
       width: 100%;
       max-width: 440px;
@@ -27,6 +32,7 @@
       border-radius: 22px;
       box-shadow: 0 20px 60px #0008;
     }
+
     .logo {
       width: 66px;
       height: 66px;
@@ -37,8 +43,17 @@
       background: #315efb;
       font-size: 30px;
     }
-    h1 { margin: 0 0 10px; font-size: 28px; }
-    p { color: #b7c4df; line-height: 1.6; }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+    }
+
+    p {
+      color: #b7c4df;
+      line-height: 1.6;
+    }
+
     .status {
       margin: 24px 0;
       padding: 14px;
@@ -47,6 +62,7 @@
       color: #a8bbdf;
       font-size: 14px;
     }
+
     button {
       width: 100%;
       padding: 15px;
@@ -58,14 +74,23 @@
       font-weight: bold;
       cursor: pointer;
     }
-    button:hover { background: #4770ff; }
-    button:disabled { opacity: .6; cursor: wait; }
-    footer { margin-top: 22px; color: #8494b5; font-size: 12px; }
+
+    button:hover {
+      background: #4770ff;
+    }
+
+    footer {
+      margin-top: 22px;
+      color: #8494b5;
+      font-size: 12px;
+    }
   </style>
 </head>
+
 <body>
   <main class="card">
     <div class="logo">🔑</div>
+
     <h1>AUTO KEY</h1>
     <p>Hệ thống nhận key tự động</p>
 
@@ -73,16 +98,19 @@
       Hệ thống đã sẵn sàng
     </div>
 
-    <button id="receive">NHẬN KEY</button>
+    <button id="receive" type="button">
+      NHẬN KEY
+    </button>
 
     <footer>Auto Key System · Website miễn phí</footer>
   </main>
 
   <script>
-    
-document.getElementById("receive").addEventListener("click", function () {
-  window.location.href = "https://gtraffic.io/8Qt59ER";
-});
+    document
+      .getElementById("receive")
+      .addEventListener("click", function () {
+        window.location.href = "https://gtraffic.io/8Qt59ER";
+      });
   </script>
 </body>
 </html>
