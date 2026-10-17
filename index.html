@@ -130,38 +130,51 @@
     const statusEl = document.getElementById("status");
     const actionBtn = document.getElementById("actionBtn");
 
-    if (tokenFromUrl === SECRET_TOKEN) {
-      // Nếu người dùng đã vượt qua GTraffic và quay lại với đúng token
+    // 1. Nếu người dùng F5 sau khi đã lấy key, hiển thị lại key cũ từ lưu trữ phiên (Session)
+    const savedKey = sessionStorage.getItem("my_claimed_key");
+    if (savedKey) {
+      statusEl.innerHTML = `
+        Key của bạn:<br>
+        <div class="key-box">${savedKey}</div>
+      `;
+      actionBtn.style.display = "none";
+    } 
+    // 2. Nếu quay lại từ GTraffic với Token hợp lệ
+    else if (tokenFromUrl === SECRET_TOKEN) {
       statusEl.innerHTML = "Xác thực thành công! Đang lấy key cho bạn...";
       actionBtn.style.display = "none";
+
+      // Đổi URL trên trình duyệt về trang sạch (xóa ?token=... để F5 không bị gọi lại)
+      window.history.replaceState({}, document.title, window.location.pathname);
 
       fetch(`${APPS_SCRIPT_URL}?action=get_key&token=${SECRET_TOKEN}`)
         .then(response => response.json())
         .then(data => {
           if (data.success) {
+            // Lưu key vào SessionStorage để chống F5 mất key hoặc lấy trùng key
+            sessionStorage.setItem("my_claimed_key", data.key);
             statusEl.innerHTML = `
               Nhận key thành công!<br>
               <div class="key-box">${data.key}</div>
             `;
           } else {
             statusEl.innerHTML = `<span style="color: #ff6b6b;">${data.message}</span>`;
+            actionBtn.style.display = "block";
           }
         })
         .catch(error => {
           statusEl.innerHTML = `<span style="color: #ff6b6b;">Lỗi kết nối đến máy chủ!</span>`;
+          actionBtn.style.display = "block";
           console.error(error);
         });
 
-    } else {
-      // Nếu là khách truy cập bình thường, hướng sang GTraffic
+    } 
+    // 3. Khách bình thường truy cập
+    else {
       statusEl.innerHTML = "Vui lòng bấm nút bên dưới để vượt link và nhận key.";
       actionBtn.addEventListener("click", function () {
-        // Cấu hình link GTraffic trỏ ngược lại trang GitHub Pages của bạn kèm token xác thực
-        // Thay 'https://ten-tai-khoan.github.io/ten-repo/' bằng link GitHub Pages thực tế của bạn
         const currentWebsiteUrl = window.location.href.split('?')[0];
         const gtrafficTarget = `${currentWebsiteUrl}?token=${SECRET_TOKEN}`;
-        
-        // Link GTraffic chuyển hướng kèm tham số redirect (hoặc tuỳ cấu hình GTraffic của bạn)
         window.location.href = `https://gtraffic.io/8Qt59ER?redirect=${encodeURIComponent(gtrafficTarget)}`;
       });
     }
