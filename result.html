@@ -1,1 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Key - Key Của Bạn</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      padding: 20px; font-family: Arial, sans-serif; color: white;
+      background: radial-gradient(circle at top, #1b2838, #0a0f1d 65%);
+    }
+    .card {
+      width: 100%; max-width: 440px; padding: 32px 24px; text-align: center;
+      background: rgba(20, 30, 55, .94); border: 1px solid #34466e;
+      border-radius: 22px; box-shadow: 0 20px 60px #0008;
+    }
+    .logo {
+      width: 66px; height: 66px; display: grid; place-items: center;
+      margin: 0 auto 18px; border-radius: 18px; background: #27ae60; font-size: 30px;
+    }
+    h1 { margin: 0 0 10px; font-size: 26px; }
+    p { color: #b7c4df; line-height: 1.6; }
+    .status {
+      margin: 24px 0; padding: 16px; border-radius: 12px;
+      background: #101a31; color: #a8bbdf; font-size: 14px; word-break: break-all;
+    }
+    .key-box {
+      margin-top: 15px; padding: 14px; background: #0d1527;
+      border: 1px dashed #00ffcc; border-radius: 10px; font-family: monospace;
+      font-size: 20px; color: #00ffcc; font-weight: bold; word-break: break-all;
+    }
+    .btn {
+      width: 100%; padding: 15px; border: 0; border-radius: 12px;
+      color: white; background: #315efb; font-size: 16px; font-weight: bold;
+      cursor: pointer; margin-top: 12px; text-decoration: none; display: inline-block;
+    }
+    .btn-copy { background: #27ae60; }
+    .btn-copy:hover { background: #2ecc71; }
+    footer { margin-top: 22px; color: #8494b5; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="logo">🎉</div>
+    <h1>KEY CỦA BẠN</h1>
+    <p>Xác thực thành công! Cảm ơn bạn đã hoàn thành nhiệm vụ.</p>
 
+    <div class="status" id="status">
+      ⏳ Đang lấy key từ máy chủ...
+    </div>
+
+    <button id="copyBtn" class="btn btn-copy" style="display: none;">📋 SAO CHÉP KEY</button>
+    <a id="homeBtn" href="index.html" class="btn" style="display: none;">🏠 QUAY LẠI TRANG CHỦ</a>
+
+    <footer>Auto Key System</footer>
+  </main>
+
+  <script>
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8vkndIDPQZXQTEUqHENL7vnR_YCJA0th_7FCta6s-kcDjUvbKn9EyQwPLLqwlwrqu/exec";
+    const SECRET_TOKEN = "my_secret_token_123";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = urlParams.get("token");
+
+    const statusEl = document.getElementById("status");
+    const copyBtn = document.getElementById("copyBtn");
+    const homeBtn = document.getElementById("homeBtn");
+
+    const savedKey = sessionStorage.getItem("my_claimed_key");
+
+    // 1. Nếu đã từng nhận key trong phiên này
+    if (savedKey) {
+      showKey(savedKey);
+    } 
+    // 2. Nếu từ GTraffic chuyển hướng về đúng token
+    else if (tokenFromUrl === SECRET_TOKEN) {
+      // Xóa đuôi URL để làm sạch địa chỉ
+      window.history.replaceState({}, document.title, window.location.pathname);
+
+      fetch(`${APPS_SCRIPT_URL}?action=get_key&token=${SECRET_TOKEN}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            sessionStorage.setItem("my_claimed_key", data.key);
+            showKey(data.key);
+          } else {
+            statusEl.innerHTML = `<span style="color: #ff6b6b;">${data.message}</span>`;
+            homeBtn.style.display = "block";
+          }
+        })
+        .catch(err => {
+          statusEl.innerHTML = `<span style="color: #ff6b6b;">Lỗi kết nối máy chủ!</span>`;
+          homeBtn.style.display = "block";
+        });
+    } 
+    // 3. Khách truy cập trực tiếp trang này mà không qua vượt link
+    else {
+      statusEl.innerHTML = "<span style="color: #ff6b6b;">Bạn chưa vượt link! Vui lòng quay lại làm nhiệm vụ.</span>";
+      homeBtn.style.display = "block";
+    }
+
+    function showKey(key) {
+      statusEl.innerHTML = `Key của bạn:<br><div class="key-box" id="keyText">${key}</div>`;
+      copyBtn.style.display = "block";
+      homeBtn.style.display = "block";
+
+      copyBtn.onclick = function() {
+        navigator.clipboard.writeText(key);
+        copyBtn.innerText = "✅ ĐÃ SAO CHÉP!";
+        setTimeout(() => { copyBtn.innerText = "📋 SAO CHÉP KEY"; }, 2000);
+      };
+    }
+  </script>
+</body>
+</html>
