@@ -62,25 +62,18 @@
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8vkndIDPQZXQTEUqHENL7vnR_YCJA0th_7FCta6s-kcDjUvbKn9EyQwPLLqwlwrqu/exec";
     const SECRET_TOKEN = "my_secret_token_123";
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const tokenFromUrl = urlParams.get("token");
-
     const statusEl = document.getElementById("status");
     const copyBtn = document.getElementById("copyBtn");
     const homeBtn = document.getElementById("homeBtn");
 
     const savedKey = sessionStorage.getItem("my_claimed_key");
 
-    // 1. Kiểm tra nếu trong phiên làm việc hiện tại đã có key
+    // 1. Nếu trong phiên làm việc đã lấy key rồi -> Hiển thị lại ngay
     if (savedKey) {
       showKey(savedKey);
     } 
-    // 2. Nếu từ GTraffic trả về đúng Token
-    else if (tokenFromUrl === SECRET_TOKEN) {
-      // Làm sạch địa chỉ URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-
-      // Gọi API đến Google Apps Script
+    // 2. Tự động lấy key khi vào trang result.html
+    else {
       fetch(`${APPS_SCRIPT_URL}?action=get_key&token=${SECRET_TOKEN}`)
         .then(res => res.json())
         .then(data => {
@@ -96,11 +89,6 @@
           statusEl.innerHTML = `<span style="color: #ff6b6b;">Lỗi kết nối máy chủ Google Sheets!</span>`;
           homeBtn.style.display = "block";
         });
-    } 
-    // 3. Nếu truy cập thẳng trang này mà chưa qua vượt link
-    else {
-      statusEl.innerHTML = "<span style='color: #ff6b6b;'>Bạn chưa vượt link! Vui lòng làm nhiệm vụ để lấy key.</span>";
-      homeBtn.style.display = "block";
     }
 
     function showKey(key) {
