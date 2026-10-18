@@ -3,105 +3,330 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auto Key - Test Mode</title>
+  <title>Tumadam MOD - Trang Chủ</title>
 
+  <!-- Font Awesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
     body {
-      margin: 0; min-height: 100vh; display: grid; place-items: center;
-      padding: 20px; font-family: Arial, sans-serif; color: white;
-      background: radial-gradient(circle at top, #243b75, #080d1b 65%);
+      background-color: #f2f5f6;
+      color: #2c3e50;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
     }
-    .card {
-      width: 100%; max-width: 440px; padding: 32px 24px; text-align: center;
-      background: rgba(20, 30, 55, .94); border: 1px solid #34466e;
-      border-radius: 22px; box-shadow: 0 20px 60px #0008;
+
+    /* Top Bar Header */
+    .header {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
     }
-    .logo {
-      width: 66px; height: 66px; display: grid; place-items: center;
-      margin: 0 auto 18px; border-radius: 18px; background: #e67e22; font-size: 30px;
+
+    .time-badge {
+      background: #ffffff;
+      border: 1.5px solid #a8e6cf;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
-    h1 { margin: 0 0 10px; font-size: 28px; }
-    p { color: #f39c12; line-height: 1.6; font-weight: bold; }
-    .status {
-      margin: 24px 0; padding: 14px; border-radius: 12px;
-      background: #101a31; color: #a8bbdf; font-size: 14px; word-break: break-all;
+
+    .menu-btn {
+      background: #ffffff;
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
-    button {
-      width: 100%; padding: 15px; border: 0; border-radius: 12px;
-      color: white; background: #27ae60; font-size: 16px; font-weight: bold; cursor: pointer;
+
+    /* Main Content */
+    .profile-card {
+      text-align: center;
+      margin-top: 40px;
+      padding: 0 20px;
     }
-    button:hover { background: #2ecc71; }
-    .key-box {
-      margin-top: 15px; padding: 12px; background: #0d1527;
-      border: 1px dashed #34466e; border-radius: 8px; font-family: monospace;
-      font-size: 18px; color: #00ffcc; word-break: break-all;
+
+    .avatar-wrapper {
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid #b2bec3;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
-    footer { margin-top: 22px; color: #8494b5; font-size: 12px; }
+
+    .avatar-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .sub-tag {
+      background: #e1e8ed;
+      color: #636e72;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    .greeting {
+      font-size: 15px;
+      color: #636e72;
+      margin-bottom: 4px;
+    }
+
+    .name {
+      font-size: 32px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .badge-check {
+      color: #0095f6;
+      font-size: 22px;
+    }
+
+    /* Sidebar Drawer Menu */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 99;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 300px;
+      height: 100%;
+      background: #ffffff;
+      box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+      transition: right 0.3s ease;
+      z-index: 100;
+      padding: 24px;
+      border-top-left-radius: 24px;
+      border-bottom-left-radius: 24px;
+    }
+
+    .sidebar.active {
+      right: 0;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #f1f2f6;
+      margin-bottom: 20px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-info img {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .user-title h3 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .user-title p {
+      font-size: 12px;
+      color: #8395a7;
+    }
+
+    .close-btn {
+      background: #f1f2f6;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      color: #2d3436;
+    }
+
+    /* Menu Links */
+    .menu-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .menu-item a {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 16px;
+      text-decoration: none;
+      color: #2d3436;
+      font-weight: 600;
+      font-size: 15px;
+      border-radius: 12px;
+      transition: background 0.2s;
+    }
+
+    .menu-item a:hover {
+      background: #f8f9fa;
+    }
+
+    .menu-item i {
+      font-size: 18px;
+      width: 24px;
+      text-align: center;
+      color: #576574;
+    }
   </style>
 </head>
-
 <body>
-  <main class="card">
-    <div class="logo">🛠️</div>
-    <h1>CHẾ ĐỘ TEST</h1>
-    <p>Đang tắt vượt link để kiểm tra lấy key</p>
 
-    <div class="status" id="status">Bấm nút bên dưới để nhận key ngay lập tức.</div>
+  <!-- Header -->
+  <header class="header">
+    <div class="time-badge">
+      <span id="clock">00:00:00</span> ⛅
+    </div>
+    <button class="menu-btn" id="openMenu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </header>
 
-    <button id="actionBtn" type="button">NHẬN KEY (TEST NHANH)</button>
+  <!-- Main Profile -->
+  <main class="profile-card">
+    <div class="avatar-wrapper">
+      <img src="https://i.ibb.co/3sX8Mrm/avatar.jpg" alt="Tumadam Avatar">
+    </div>
 
-    <footer>Test Mode · Auto Key System</footer>
+    <div class="sub-tag">Tumadam</div>
+    <div class="greeting">Hi, I am</div>
+    <h1 class="name">Tumadam <i class="fa-solid fa-circle-check badge-check"></i></h1>
   </main>
 
+  <!-- Overlay & Sidebar Menu -->
+  <div class="sidebar-overlay" id="overlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="user-info">
+        <img src="https://i.ibb.co/3sX8Mrm/avatar.jpg" alt="Avatar Small">
+        <div class="user-title">
+          <h3>Tumadam MOD</h3>
+          <p>Developer & Modder</p>
+        </div>
+      </div>
+      <button class="close-btn" id="closeMenu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <ul class="menu-list">
+      <li class="menu-item">
+        <a href="#about"><i class="fa-solid fa-user"></i> About</a>
+      </li>
+      <li class="menu-item">
+        <a href="#tai-game"><i class="fa-solid fa-gamepad"></i> Tải Game</a>
+      </li>
+      <!-- NÚT GET KEY CHUYỂN THẲNG SANG TRANG 3 KÈM TOKEN ĐỂ TEST -->
+      <li class="menu-item">
+        <a href="https://<ten-tai-khoan>.github.io/<ten-repo-key>/result.html?token=my_secret_token_123">
+          <i class="fa-solid fa-key"></i> Get Key (Test)
+        </a>
+      </li>
+      <li class="menu-item">
+        <a href="#file-mod"><i class="fa-solid fa-microchip"></i> File Mod</a>
+      </li>
+      <li class="menu-item">
+        <a href="#video-huong-dan"><i class="fa-circle-play"></i> Video Hướng Dẫn</a>
+      </li>
+      <li class="menu-item">
+        <a href="#contact"><i class="fa-solid fa-comment-dots"></i> Contact</a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- JS Logic -->
   <script>
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8vkndIDPQZXQTEUqHENL7vnR_YCJA0th_7FCta6s-kcDjUvbKn9EyQwPLLqwlwrqu/exec";
-    const SECRET_TOKEN = "my_secret_token_123";
-
-    const statusEl = document.getElementById("status");
-    const actionBtn = document.getElementById("actionBtn");
-
-    // Kiểm tra nếu đã có key lưu trong trình duyệt
-    const savedKey = sessionStorage.getItem("my_claimed_key");
-    if (savedKey) {
-      statusEl.innerHTML = `Key hiện tại của bạn:<br><div class="key-box">${savedKey}</div>`;
-      actionBtn.innerText = "XÓA KEY TEST & LẤY MỚI";
-      actionBtn.style.background = "#c0392b";
-      actionBtn.onclick = function() {
-        sessionStorage.removeItem("my_claimed_key");
-        window.location.reload();
-      };
-    } else {
-      actionBtn.onclick = function () {
-        statusEl.innerHTML = "⏳ Đang kết nối lấy key từ Google Sheets...";
-        actionBtn.style.display = "none";
-
-        // Gọi trực tiếp Apps Script không cần qua GTraffic
-        fetch(`${APPS_SCRIPT_URL}?action=get_key&token=${SECRET_TOKEN}`)
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              sessionStorage.setItem("my_claimed_key", data.key);
-              statusEl.innerHTML = `🎉 Lấy key thành công!<br><div class="key-box">${data.key}</div>`;
-              actionBtn.innerText = "XÓA KEY TEST & LẤY MỚI";
-              actionBtn.style.background = "#c0392b";
-              actionBtn.style.display = "block";
-              actionBtn.onclick = function() {
-                sessionStorage.removeItem("my_claimed_key");
-                window.location.reload();
-              };
-            } else {
-              statusEl.innerHTML = `<span style="color: #ff6b6b;">${data.message}</span>`;
-              actionBtn.style.display = "block";
-            }
-          })
-          .catch(error => {
-            statusEl.innerHTML = `<span style="color: #ff6b6b;">Lỗi kết nối máy chủ!</span>`;
-            actionBtn.style.display = "block";
-            console.error(error);
-          });
-      };
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('clock').innerText = `${hours}:${minutes}:${seconds}`;
     }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    const openMenuBtn = document.getElementById('openMenu');
+    const closeMenuBtn = document.getElementById('closeMenu');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    openMenuBtn.addEventListener('click', () => {
+      sidebar.classList.add('active');
+      overlay.classList.add('active');
+    });
+
+    function closeSidebar() {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+    }
+
+    closeMenuBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
   </script>
 </body>
 </html>
