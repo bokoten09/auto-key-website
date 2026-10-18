@@ -3,180 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auto Key - Nhận Key</title>
+  <title>Auto Key - Test Mode</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-      color: white;
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      padding: 20px; font-family: Arial, sans-serif; color: white;
       background: radial-gradient(circle at top, #243b75, #080d1b 65%);
     }
-
     .card {
-      width: 100%;
-      max-width: 440px;
-      padding: 32px 24px;
-      text-align: center;
-      background: rgba(20, 30, 55, .94);
-      border: 1px solid #34466e;
-      border-radius: 22px;
-      box-shadow: 0 20px 60px #0008;
+      width: 100%; max-width: 440px; padding: 32px 24px; text-align: center;
+      background: rgba(20, 30, 55, .94); border: 1px solid #34466e;
+      border-radius: 22px; box-shadow: 0 20px 60px #0008;
     }
-
     .logo {
-      width: 66px;
-      height: 66px;
-      display: grid;
-      place-items: center;
-      margin: 0 auto 18px;
-      border-radius: 18px;
-      background: #315efb;
-      font-size: 30px;
+      width: 66px; height: 66px; display: grid; place-items: center;
+      margin: 0 auto 18px; border-radius: 18px; background: #e67e22; font-size: 30px;
     }
-
-    h1 {
-      margin: 0 0 10px;
-      font-size: 28px;
-    }
-
-    p {
-      color: #b7c4df;
-      line-height: 1.6;
-    }
-
+    h1 { margin: 0 0 10px; font-size: 28px; }
+    p { color: #f39c12; line-height: 1.6; font-weight: bold; }
     .status {
-      margin: 24px 0;
-      padding: 14px;
-      border-radius: 12px;
-      background: #101a31;
-      color: #a8bbdf;
-      font-size: 14px;
-      word-break: break-all;
+      margin: 24px 0; padding: 14px; border-radius: 12px;
+      background: #101a31; color: #a8bbdf; font-size: 14px; word-break: break-all;
     }
-
     button {
-      width: 100%;
-      padding: 15px;
-      border: 0;
-      border-radius: 12px;
-      color: white;
-      background: #315efb;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
+      width: 100%; padding: 15px; border: 0; border-radius: 12px;
+      color: white; background: #27ae60; font-size: 16px; font-weight: bold; cursor: pointer;
     }
-
-    button:hover {
-      background: #4770ff;
-    }
-
+    button:hover { background: #2ecc71; }
     .key-box {
-      margin-top: 15px;
-      padding: 12px;
-      background: #0d1527;
-      border: 1px dashed #34466e;
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 18px;
-      color: #00ffcc;
-      word-break: break-all;
+      margin-top: 15px; padding: 12px; background: #0d1527;
+      border: 1px dashed #34466e; border-radius: 8px; font-family: monospace;
+      font-size: 18px; color: #00ffcc; word-break: break-all;
     }
-
-    footer {
-      margin-top: 22px;
-      color: #8494b5;
-      font-size: 12px;
-    }
+    footer { margin-top: 22px; color: #8494b5; font-size: 12px; }
   </style>
 </head>
 
 <body>
   <main class="card">
-    <div class="logo">🔑</div>
+    <div class="logo">🛠️</div>
+    <h1>CHẾ ĐỘ TEST</h1>
+    <p>Đang tắt vượt link để kiểm tra lấy key</p>
 
-    <h1>AUTO KEY</h1>
-    <p>Hệ thống nhận key tự động qua GTraffic</p>
+    <div class="status" id="status">Bấm nút bên dưới để nhận key ngay lập tức.</div>
 
-    <div class="status" id="status">
-      Đang kiểm tra trạng thái...
-    </div>
+    <button id="actionBtn" type="button">NHẬN KEY (TEST NHANH)</button>
 
-    <button id="actionBtn" type="button">
-      NHẬN KEY
-    </button>
-
-    <footer>Auto Key System · Website miễn phí</footer>
+    <footer>Test Mode · Auto Key System</footer>
   </main>
 
   <script>
-    // URL Google Apps Script của bạn
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8vkndIDPQZXQTEUqHENL7vnR_YCJA0th_7FCta6s-kcDjUvbKn9EyQwPLLqwlwrqu/exec";
-    
-    // Token bí mật đồng bộ với bên Google Apps Script
     const SECRET_TOKEN = "my_secret_token_123";
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const tokenFromUrl = urlParams.get("token");
 
     const statusEl = document.getElementById("status");
     const actionBtn = document.getElementById("actionBtn");
 
-    // 1. Nếu người dùng F5 sau khi đã lấy key, hiển thị lại key cũ từ lưu trữ phiên (Session)
+    // Kiểm tra nếu đã có key lưu trong trình duyệt
     const savedKey = sessionStorage.getItem("my_claimed_key");
     if (savedKey) {
-      statusEl.innerHTML = `
-        Key của bạn:<br>
-        <div class="key-box">${savedKey}</div>
-      `;
-      actionBtn.style.display = "none";
-    } 
-    // 2. Nếu quay lại từ GTraffic với Token hợp lệ
-    else if (tokenFromUrl === SECRET_TOKEN) {
-      statusEl.innerHTML = "Xác thực thành công! Đang lấy key cho bạn...";
-      actionBtn.style.display = "none";
+      statusEl.innerHTML = `Key hiện tại của bạn:<br><div class="key-box">${savedKey}</div>`;
+      actionBtn.innerText = "XÓA KEY TEST & LẤY MỚI";
+      actionBtn.style.background = "#c0392b";
+      actionBtn.onclick = function() {
+        sessionStorage.removeItem("my_claimed_key");
+        window.location.reload();
+      };
+    } else {
+      actionBtn.onclick = function () {
+        statusEl.innerHTML = "⏳ Đang kết nối lấy key từ Google Sheets...";
+        actionBtn.style.display = "none";
 
-      // Đổi URL trên trình duyệt về trang sạch (xóa ?token=... để F5 không bị gọi lại)
-      window.history.replaceState({}, document.title, window.location.pathname);
-
-      fetch(`${APPS_SCRIPT_URL}?action=get_key&token=${SECRET_TOKEN}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            // Lưu key vào SessionStorage để chống F5 mất key hoặc lấy trùng key
-            sessionStorage.setItem("my_claimed_key", data.key);
-            statusEl.innerHTML = `
-              Nhận key thành công!<br>
-              <div class="key-box">${data.key}</div>
-            `;
-          } else {
-            statusEl.innerHTML = `<span style="color: #ff6b6b;">${data.message}</span>`;
+        // Gọi trực tiếp Apps Script không cần qua GTraffic
+        fetch(`${APPS_SCRIPT_URL}?action=get_key&token=${SECRET_TOKEN}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              sessionStorage.setItem("my_claimed_key", data.key);
+              statusEl.innerHTML = `🎉 Lấy key thành công!<br><div class="key-box">${data.key}</div>`;
+              actionBtn.innerText = "XÓA KEY TEST & LẤY MỚI";
+              actionBtn.style.background = "#c0392b";
+              actionBtn.style.display = "block";
+              actionBtn.onclick = function() {
+                sessionStorage.removeItem("my_claimed_key");
+                window.location.reload();
+              };
+            } else {
+              statusEl.innerHTML = `<span style="color: #ff6b6b;">${data.message}</span>`;
+              actionBtn.style.display = "block";
+            }
+          })
+          .catch(error => {
+            statusEl.innerHTML = `<span style="color: #ff6b6b;">Lỗi kết nối máy chủ!</span>`;
             actionBtn.style.display = "block";
-          }
-        })
-        .catch(error => {
-          statusEl.innerHTML = `<span style="color: #ff6b6b;">Lỗi kết nối đến máy chủ!</span>`;
-          actionBtn.style.display = "block";
-          console.error(error);
-        });
-
-    } 
-    // 3. Khách bình thường truy cập
-    else {
-      statusEl.innerHTML = "Vui lòng bấm nút bên dưới để vượt link và nhận key.";
-      actionBtn.addEventListener("click", function () {
-        const currentWebsiteUrl = window.location.href.split('?')[0];
-        const gtrafficTarget = `${currentWebsiteUrl}?token=${SECRET_TOKEN}`;
-        window.location.href = `https://gtraffic.io/8Qt59ER?redirect=${encodeURIComponent(gtrafficTarget)}`;
-      });
+            console.error(error);
+          });
+      };
     }
   </script>
 </body>
