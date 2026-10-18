@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auto Key - Vượt Link</title>
+  <title>Auto Key - Test Mode</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -18,42 +18,37 @@
     }
     .logo {
       width: 66px; height: 66px; display: grid; place-items: center;
-      margin: 0 auto 18px; border-radius: 18px; background: #315efb; font-size: 30px;
+      margin: 0 auto 18px; border-radius: 18px; background: #e67e22; font-size: 30px;
     }
     h1 { margin: 0 0 10px; font-size: 28px; }
-    p { color: #b7c4df; line-height: 1.6; }
+    p { color: #f39c12; line-height: 1.6; font-weight: bold; }
     button {
       width: 100%; padding: 15px; border: 0; border-radius: 12px;
-      color: white; background: #315efb; font-size: 16px; font-weight: bold;
+      color: white; background: #27ae60; font-size: 16px; font-weight: bold;
       cursor: pointer; margin-top: 20px; transition: background 0.2s;
     }
-    button:hover { background: #4770ff; }
+    button:hover { background: #2ecc71; }
     footer { margin-top: 22px; color: #8494b5; font-size: 12px; }
   </style>
 </head>
 <body>
   <main class="card">
-    <div class="logo">🔑</div>
-    <h1>GET KEY SYSTEM</h1>
-    <p>Bấm nút bên dưới để hoàn thành vượt link và nhận key sử dụng.</p>
+    <div class="logo">🛠️</div>
+    <h1>CHẾ ĐỘ TEST</h1>
+    <p>Đang tắt vượt link để kiểm tra chuyển sang trang kết quả</p>
 
-    <button id="getBtn" type="button">🚀 VƯỢT LINK LẤY KEY</button>
+    <button id="testBtn" type="button">👉 BẤM ĐỂ NHẬN KEY (TEST NHANH)</button>
 
-    <footer>Auto Key System</footer>
+    <footer>Test Mode · Auto Key System</footer>
   </main>
 
   <script>
     const SECRET_TOKEN = "my_secret_token_123";
 
-    document.getElementById("getBtn").onclick = function() {
-      // Tự động lấy URL hiện tại để chuyển hướng đến file result.html
+    document.getElementById("testBtn").onclick = function() {
+      // Tự động chuyển thẳng sang trang result.html kèm token test mà không qua GTraffic
       const currentDirUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
-      const resultPageUrl = `${currentDirUrl}/result.html`;
-      
-      const gtrafficTarget = `${resultPageUrl}?token=${SECRET_TOKEN}`;
-      
-      // Chuyển hướng sang GTraffic
-      window.location.href = `https://gtraffic.io/8Qt59ER?redirect=${encodeURIComponent(gtrafficTarget)}`;
+      window.location.href = `${currentDirUrl}/result.html?token=${SECRET_TOKEN}`;
     };
   </script>
 </body>
