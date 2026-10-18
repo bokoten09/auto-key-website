@@ -43,18 +43,13 @@
   </main>
 
   <script>
-    const SECRET_TOKEN = "my_secret_token_123";
-
     document.getElementById("getBtn").onclick = function() {
-      // Tự động định vị đường dẫn đến file result.html
+      // Đường dẫn đến trang kết quả result.html
       const currentDirUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
       const resultPageUrl = `${currentDirUrl}/result.html`;
       
-      // Tạo link đích sau khi vượt link kèm token bí mật
-      const gtrafficTarget = `${resultPageUrl}?token=${SECRET_TOKEN}`;
-      
-      // Chuyển hướng sang GTraffic với link mới uCQ8aQ5
-      window.location.href = `https://gtraffic.io/uCQ8aQ5?redirect=${encodeURIComponent(gtrafficTarget)}`;
+      // Chuyển hướng sang GTraffic với mã link mới QcD5iTe
+      window.location.href = `https://gtraffic.io/QcD5iTe?redirect=${encodeURIComponent(resultPageUrl)}`;
     };
   </script>
 </body>
