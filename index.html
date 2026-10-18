@@ -35,9 +35,9 @@
   <main class="card">
     <div class="logo">🛠️</div>
     <h1>CHẾ ĐỘ TEST</h1>
-    <p>Đang tắt vượt link để kiểm tra chuyển sang trang kết quả</p>
+    <p>Đang tắt vượt link để kiểm tra kết nối sang Trang 3</p>
 
-    <button id="testBtn" type="button">👉 BẤM ĐỂ NHẬN KEY (TEST NHANH)</button>
+    <button id="getBtn" type="button">👉 NHẬN KEY (ĐẾN TRANG 3)</button>
 
     <footer>Test Mode · Auto Key System</footer>
   </main>
@@ -45,10 +45,9 @@
   <script>
     const SECRET_TOKEN = "my_secret_token_123";
 
-    document.getElementById("testBtn").onclick = function() {
-      // Tự động chuyển thẳng sang trang result.html kèm token test mà không qua GTraffic
-      const currentDirUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
-      window.location.href = `${currentDirUrl}/result.html?token=${SECRET_TOKEN}`;
+    document.getElementById("getBtn").onclick = function() {
+      // Chuyển thẳng sang result.html đính kèm token test mà không qua GTraffic
+      window.location.href = `result.html?token=${SECRET_TOKEN}`;
     };
   </script>
 </body>
