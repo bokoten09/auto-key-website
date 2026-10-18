@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auto Key - Vượt Link</title>
+  <title>Auto Key - Nhận Key</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -34,10 +34,10 @@
 <body>
   <main class="card">
     <div class="logo">🔑</div>
-    <h1>GET KEY SYSTEM</h1>
-    <p>Bấm nút bên dưới để hoàn thành vượt link và nhận key sử dụng.</p>
+    <h1>AUTO KEY</h1>
+    <p>Bấm nút bên dưới để vượt link và nhận key tự động.</p>
 
-    <button id="getBtn" type="button">🚀 VƯỢT LINK LẤY KEY</button>
+    <button id="getBtn" type="button">🚀 NHẬN KEY</button>
 
     <footer>Auto Key System</footer>
   </main>
@@ -46,14 +46,14 @@
     const SECRET_TOKEN = "my_secret_token_123";
 
     document.getElementById("getBtn").onclick = function() {
-      // 1. Tự động xác định đường dẫn thư mục hiện tại để trỏ chính xác đến result.html
+      // Tự động định vị đường dẫn đến file result.html
       const currentDirUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
       const resultPageUrl = `${currentDirUrl}/result.html`;
       
-      // 2. Tạo đường link đích sau khi vượt xong kèm token bí mật
+      // Tạo link đích sau khi vượt link kèm token bí mật
       const gtrafficTarget = `${resultPageUrl}?token=${SECRET_TOKEN}`;
       
-      // 3. Chuyển hướng người dùng sang GTraffic
+      // Chuyển hướng sang GTraffic
       window.location.href = `https://gtraffic.io/8Qt59ER?redirect=${encodeURIComponent(gtrafficTarget)}`;
     };
   </script>
