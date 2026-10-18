@@ -33,11 +33,12 @@
     }
     .btn {
       width: 100%; padding: 15px; border: 0; border-radius: 12px;
-      color: white; background: #315efb; font-size: 16px; font-weight: bold;
+      color: white; background: #27ae60; font-size: 16px; font-weight: bold;
       cursor: pointer; margin-top: 12px; text-decoration: none; display: inline-block;
     }
-    .btn-copy { background: #27ae60; }
-    .btn-copy:hover { background: #2ecc71; }
+    .btn:hover { background: #2ecc71; }
+    .btn-home { background: #315efb; }
+    .btn-home:hover { background: #4770ff; }
     footer { margin-top: 22px; color: #8494b5; font-size: 12px; }
   </style>
 </head>
@@ -51,8 +52,8 @@
       ⏳ Đang lấy key từ máy chủ...
     </div>
 
-    <button id="copyBtn" class="btn btn-copy" style="display: none;">📋 SAO CHÉP KEY</button>
-    <a id="homeBtn" href="index.html" class="btn" style="display: none;">🏠 QUAY LẠI TRANG CHỦ</a>
+    <button id="copyBtn" class="btn" style="display: none;">📋 SAO CHÉP KEY</button>
+    <a id="homeBtn" href="index.html" class="btn btn-home" style="display: none;">🔄 LẤY KEY MỚI</a>
 
     <footer>Auto Key System</footer>
   </main>
@@ -70,13 +71,12 @@
 
     const savedKey = sessionStorage.getItem("my_claimed_key");
 
-    // 1. Nếu đã từng nhận key trong phiên này
+    // 1. Nếu đã từng lấy key trong phiên này
     if (savedKey) {
       showKey(savedKey);
     } 
-    // 2. Nếu từ GTraffic chuyển hướng về đúng token
+    // 2. Nếu vượt link về đúng token
     else if (tokenFromUrl === SECRET_TOKEN) {
-      // Xóa đuôi URL để làm sạch địa chỉ
       window.history.replaceState({}, document.title, window.location.pathname);
 
       fetch(`${APPS_SCRIPT_URL}?action=get_key&token=${SECRET_TOKEN}`)
@@ -95,14 +95,14 @@
           homeBtn.style.display = "block";
         });
     } 
-    // 3. Khách truy cập trực tiếp trang này mà không qua vượt link
+    // 3. Nếu truy cập thẳng trang này mà chưa vượt link
     else {
-      statusEl.innerHTML = "<span style="color: #ff6b6b;">Bạn chưa vượt link! Vui lòng quay lại làm nhiệm vụ.</span>";
+      statusEl.innerHTML = "<span style='color: #ff6b6b;'>Bạn chưa vượt link! Vui lòng làm nhiệm vụ để lấy key.</span>";
       homeBtn.style.display = "block";
     }
 
     function showKey(key) {
-      statusEl.innerHTML = `Key của bạn:<br><div class="key-box" id="keyText">${key}</div>`;
+      statusEl.innerHTML = `Key của bạn:<br><div class="key-box">${key}</div>`;
       copyBtn.style.display = "block";
       homeBtn.style.display = "block";
 
