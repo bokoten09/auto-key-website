@@ -44,11 +44,14 @@
 
   <script>
     document.getElementById("getBtn").onclick = function() {
-      // Đường dẫn đến trang kết quả result.html
+      // 1. Kích hoạt vé thông hành bảo mật trước khi sang GTraffic
+      sessionStorage.setItem("g_passed_verify", "true");
+
+      // 2. Đường dẫn đến trang kết quả result.html
       const currentDirUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
       const resultPageUrl = `${currentDirUrl}/result.html`;
       
-      // Chuyển hướng sang GTraffic với mã link mới QcD5iTe
+      // 3. Chuyển hướng sang GTraffic với mã link QcD5iTe
       window.location.href = `https://gtraffic.io/QcD5iTe?redirect=${encodeURIComponent(resultPageUrl)}`;
     };
   </script>
