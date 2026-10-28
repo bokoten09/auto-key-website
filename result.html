@@ -44,12 +44,12 @@
 </head>
 <body>
   <main class="card">
-    <div class="logo">🎉</div>
-    <h1>KEY CỦA BẠN</h1>
-    <p>Xác thực thành công! Cảm ơn bạn đã vượt link.</p>
+    <div class="logo">🔒</div>
+    <h1>BẢO MẬT HỆ THỐNG</h1>
+    <p>Đang kiểm tra quyền truy cập vượt link...</p>
 
     <div class="status" id="status">
-      ⏳ Đang kết nối lấy key từ máy chủ...
+      ⏳ Đang xác thực phiên làm việc...
     </div>
 
     <button id="copyBtn" class="btn" style="display: none;">📋 SAO CHÉP KEY</button>
@@ -59,14 +59,16 @@
   </main>
 
   <script>
-    // Đường dẫn Web App Google Apps Script của bạn đã được tích hợp chuẩn xác
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8vkndIDPQZXQTEUqHENL7vnR_YCJA0th_7FCta6s-kcDjUvbKn9EyQwPLLqwlwrqu/exec";
 
     const statusEl = document.getElementById("status");
     const copyBtn = document.getElementById("copyBtn");
     const homeBtn = document.getElementById("homeBtn");
 
-    // Hàm giới hạn tối đa 2 key mỗi ngày trên trình duyệt của người dùng
+    // 1. Kiểm tra xem người dùng có thực sự vừa bấm nút vượt link hay không
+    // (GTraffic hoặc trang chủ của bạn sẽ truyền cờ hoặc lưu trạng thái vào sessionStorage)
+    const hasPassedLink = sessionStorage.getItem("g_passed_verify");
+
     function checkAndRecordLimit() {
       const today = new Date().toLocaleDateString();
       let limitData = JSON.parse(localStorage.getItem("daily_key_limit") || "{}");
@@ -76,7 +78,7 @@
       }
       
       if (limitData.count >= 2) {
-        return false; // Đã đạt giới hạn 2 key trong ngày
+        return false; 
       }
       
       limitData.count += 1;
@@ -84,22 +86,37 @@
       return true;
     }
 
-    const savedKey = sessionStorage.getItem("my_claimed_key");
-
-    if (savedKey) {
-      showKey(savedKey);
+    // Nếu người dùng cố tình copy link dán sang tab mới mà không qua quy trình vượt link
+    if (!hasPassedLink) {
+      statusEl.innerHTML = `<span style="color: #ff6b6b;">⚠️ Truy cập không hợp lệ! Bạn phải hoàn thành vượt link mới được nhận key.</span>`;
+      homeBtn.style.display = "block";
     } else {
+      // Đã vượt link hợp lệ -> Xóa cờ ngay lập tức để chống F5 lấy lại key cũ
+      sessionStorage.removeItem("g_passed_verify");
+
+      // Kiểm tra giới hạn 2 key/ngày
       if (!checkAndRecordLimit()) {
-        statusEl.innerHTML = `<span style="color: #ff6b6b;">⚠️ Bạn đã đạt giới hạn lấy tối đa 2 key trong ngày hôm nay! Vui lòng quay lại vào ngày mai.</span>`;
+        statusEl.innerHTML = `<span style="color: #ff6b6b;">⚠️ Bạn đã đạt giới hạn lấy tối đa 2 key trong ngày hôm nay!</span>`;
         homeBtn.style.display = "block";
       } else {
-        // Gọi sang Google Apps Script kèm theo tham số ?action=get_key
+        statusEl.innerHTML = `⏳ Đang kết nối lấy key từ máy chủ...`;
+        
+        // Gọi lấy key từ Google Apps Script
         fetch(`${APPS_SCRIPT_URL}?action=get_key`)
           .then(res => res.json())
           .then(data => {
             if (data.success) {
-              sessionStorage.setItem("my_claimed_key", data.key);
-              showKey(data.key);
+              document.querySelector("h1").innerText = "KEY CỦA BẠN";
+              document.querySelector("p").innerText = "Xác thực thành công! Cảm ơn bạn đã vượt link.";
+              statusEl.innerHTML = `Key của bạn:<br><div class="key-box">${data.key}</div>`;
+              copyBtn.style.display = "block";
+              homeBtn.style.display = "block";
+
+              copyBtn.onclick = function() {
+                navigator.clipboard.writeText(data.key);
+                copyBtn.innerText = "✅ ĐÃ SAO CHÉP!";
+                setTimeout(() => { copyBtn.innerText = "📋 SAO CHÉP KEY"; }, 2000);
+              };
             } else {
               statusEl.innerHTML = `<span style="color: #ff6b6b;">${data.message}</span>`;
               homeBtn.style.display = "block";
@@ -110,18 +127,6 @@
             homeBtn.style.display = "block";
           });
       }
-    }
-
-    function showKey(key) {
-      statusEl.innerHTML = `Key của bạn:<br><div class="key-box">${key}</div>`;
-      copyBtn.style.display = "block";
-      homeBtn.style.display = "block";
-
-      copyBtn.onclick = function() {
-        navigator.clipboard.writeText(key);
-        copyBtn.innerText = "✅ ĐÃ SAO CHÉP!";
-        setTimeout(() => { copyBtn.innerText = "📋 SAO CHÉP KEY"; }, 2000);
-      };
     }
   </script>
 </body>
