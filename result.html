@@ -65,22 +65,19 @@
     const copyBtn = document.getElementById("copyBtn");
     const homeBtn = document.getElementById("homeBtn");
 
-    // Hàm kiểm tra và đếm giới hạn tối đa 2 key mỗi ngày trên máy người dùng
+    // Hàm giới hạn tối đa 2 key mỗi ngày trên trình duyệt
     function checkAndRecordLimit() {
       const today = new Date().toLocaleDateString();
       let limitData = JSON.parse(localStorage.getItem("daily_key_limit") || "{}");
       
-      // Nếu sang ngày mới -> Đặt lại đếm từ 0
       if (limitData.date !== today) {
         limitData = { date: today, count: 0 };
       }
       
-      // Nếu đã lấy đủ 2 key trong ngày -> Chặn không cho lấy thêm
       if (limitData.count >= 2) {
-        return false;
+        return false; // Đã đạt giới hạn 2 key trong ngày
       }
       
-      // Tăng số lượt lấy key trong ngày lên 1
       limitData.count += 1;
       localStorage.setItem("daily_key_limit", JSON.stringify(limitData));
       return true;
@@ -88,17 +85,14 @@
 
     const savedKey = sessionStorage.getItem("my_claimed_key");
 
-    // 1. Nếu trong cùng một phiên duyệt web đã lấy key rồi -> Hiển thị lại ngay không trừ thêm lượt
     if (savedKey) {
       showKey(savedKey);
-    } 
-    // 2. Tự động kiểm tra giới hạn và lấy key từ Google Sheets
-    else {
+    } else {
       if (!checkAndRecordLimit()) {
         statusEl.innerHTML = `<span style="color: #ff6b6b;">⚠️ Bạn đã đạt giới hạn lấy tối đa 2 key trong ngày hôm nay! Vui lòng quay lại vào ngày mai.</span>`;
         homeBtn.style.display = "block";
       } else {
-        // Gọi Google Apps Script lấy key mới (đã gỡ phần check token bắt buộc)
+        // Gọi Google Apps Script lấy key (Đã gỡ bỏ yêu cầu token)
         fetch(`${APPS_SCRIPT_URL}?action=get_key`)
           .then(res => res.json())
           .then(data => {
