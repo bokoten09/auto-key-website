@@ -59,13 +59,14 @@
   </main>
 
   <script>
+    // Đường dẫn Web App Google Apps Script của bạn đã được tích hợp chuẩn xác
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8vkndIDPQZXQTEUqHENL7vnR_YCJA0th_7FCta6s-kcDjUvbKn9EyQwPLLqwlwrqu/exec";
 
     const statusEl = document.getElementById("status");
     const copyBtn = document.getElementById("copyBtn");
     const homeBtn = document.getElementById("homeBtn");
 
-    // Hàm giới hạn tối đa 2 key mỗi ngày trên trình duyệt
+    // Hàm giới hạn tối đa 2 key mỗi ngày trên trình duyệt của người dùng
     function checkAndRecordLimit() {
       const today = new Date().toLocaleDateString();
       let limitData = JSON.parse(localStorage.getItem("daily_key_limit") || "{}");
@@ -92,7 +93,7 @@
         statusEl.innerHTML = `<span style="color: #ff6b6b;">⚠️ Bạn đã đạt giới hạn lấy tối đa 2 key trong ngày hôm nay! Vui lòng quay lại vào ngày mai.</span>`;
         homeBtn.style.display = "block";
       } else {
-        // Gọi Google Apps Script lấy key (Đã gỡ bỏ yêu cầu token)
+        // Gọi sang Google Apps Script kèm theo tham số ?action=get_key
         fetch(`${APPS_SCRIPT_URL}?action=get_key`)
           .then(res => res.json())
           .then(data => {
