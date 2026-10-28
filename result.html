@@ -46,10 +46,10 @@
   <main class="card">
     <div class="logo">🎉</div>
     <h1>KEY CỦA BẠN</h1>
-    <p>Xác thực thành công! Cảm ơn bạn đã vượt link.</p>
+    <p>Hệ thống xác thực tự động</p>
 
     <div class="status" id="status">
-      ⏳ Đang kết nối lấy key từ máy chủ...
+      ⏳ Đang kiểm tra giới hạn và lấy key...
     </div>
 
     <button id="copyBtn" class="btn" style="display: none;">📋 SAO CHÉP KEY</button>
@@ -60,35 +60,57 @@
 
   <script>
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8vkndIDPQZXQTEUqHENL7vnR_YCJA0th_7FCta6s-kcDjUvbKn9EyQwPLLqwlwrqu/exec";
-    const SECRET_TOKEN = "my_secret_token_123";
 
     const statusEl = document.getElementById("status");
     const copyBtn = document.getElementById("copyBtn");
     const homeBtn = document.getElementById("homeBtn");
 
+    // 1. Kiểm tra giới hạn 2 key mỗi ngày trên trình duyệt (Thiết bị/IP giả lập qua LocalStorage)
+    function checkAndRecordLimit() {
+      const today = new Date().toLocaleDateString();
+      let limitData = JSON.parse(localStorage.getItem("daily_key_limit") || "{}");
+      
+      if (limitData.date !== today) {
+        limitData = { date: today, count: 0 };
+      }
+      
+      if (limitData.count >= 2) {
+        return false; // Đã đạt tối đa 2 key trong ngày
+      }
+      
+      // Tăng số lượng đã lấy lên 1
+      limitData.count += 1;
+      localStorage.setItem("daily_key_limit", JSON.stringify(limitData));
+      return true;
+    }
+
     const savedKey = sessionStorage.getItem("my_claimed_key");
 
-    // 1. Nếu trong phiên làm việc đã lấy key rồi -> Hiển thị lại ngay
     if (savedKey) {
       showKey(savedKey);
-    } 
-    // 2. Tự động lấy key khi vào trang result.html
-    else {
-      fetch(`${APPS_SCRIPT_URL}?action=get_key&token=${SECRET_TOKEN}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            sessionStorage.setItem("my_claimed_key", data.key);
-            showKey(data.key);
-          } else {
-            statusEl.innerHTML = `<span style="color: #ff6b6b;">${data.message}</span>`;
+    } else {
+      // Kiểm tra giới hạn trước khi gọi Google Sheets
+      if (!checkAndRecordLimit()) {
+        statusEl.innerHTML = `<span style="color: #ff6b6b;">⚠️ Bạn đã đạt giới hạn lấy tối đa 2 key trong ngày hôm nay! Vui lòng quay lại vào ngày mai.</span>`;
+        homeBtn.style.display = "block";
+      } else {
+        // Gọi Google Sheets lấy key mới
+        fetch(`${APPS_SCRIPT_URL}?action=get_key`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              sessionStorage.setItem("my_claimed_key", data.key);
+              showKey(data.key);
+            } else {
+              statusEl.innerHTML = `<span style="color: #ff6b6b;">${data.message}</span>`;
+              homeBtn.style.display = "block";
+            }
+          })
+          .catch(err => {
+            statusEl.innerHTML = `<span style="color: #ff6b6b;">Lỗi kết nối máy chủ Google Sheets!</span>`;
             homeBtn.style.display = "block";
-          }
-        })
-        .catch(err => {
-          statusEl.innerHTML = `<span style="color: #ff6b6b;">Lỗi kết nối máy chủ Google Sheets!</span>`;
-          homeBtn.style.display = "block";
-        });
+          });
+      }
     }
 
     function showKey(key) {
