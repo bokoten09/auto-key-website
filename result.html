@@ -46,10 +46,10 @@
   <main class="card">
     <div class="logo">🎉</div>
     <h1>KEY CỦA BẠN</h1>
-    <p>Hệ thống xác thực tự động</p>
+    <p>Xác thực thành công! Cảm ơn bạn đã vượt link.</p>
 
     <div class="status" id="status">
-      ⏳ Đang kiểm tra giới hạn và lấy key...
+      ⏳ Đang kết nối lấy key từ máy chủ...
     </div>
 
     <button id="copyBtn" class="btn" style="display: none;">📋 SAO CHÉP KEY</button>
@@ -65,20 +65,22 @@
     const copyBtn = document.getElementById("copyBtn");
     const homeBtn = document.getElementById("homeBtn");
 
-    // 1. Kiểm tra giới hạn 2 key mỗi ngày trên trình duyệt (Thiết bị/IP giả lập qua LocalStorage)
+    // Hàm kiểm tra và đếm giới hạn tối đa 2 key mỗi ngày trên máy người dùng
     function checkAndRecordLimit() {
       const today = new Date().toLocaleDateString();
       let limitData = JSON.parse(localStorage.getItem("daily_key_limit") || "{}");
       
+      // Nếu sang ngày mới -> Đặt lại đếm từ 0
       if (limitData.date !== today) {
         limitData = { date: today, count: 0 };
       }
       
+      // Nếu đã lấy đủ 2 key trong ngày -> Chặn không cho lấy thêm
       if (limitData.count >= 2) {
-        return false; // Đã đạt tối đa 2 key trong ngày
+        return false;
       }
       
-      // Tăng số lượng đã lấy lên 1
+      // Tăng số lượt lấy key trong ngày lên 1
       limitData.count += 1;
       localStorage.setItem("daily_key_limit", JSON.stringify(limitData));
       return true;
@@ -86,15 +88,17 @@
 
     const savedKey = sessionStorage.getItem("my_claimed_key");
 
+    // 1. Nếu trong cùng một phiên duyệt web đã lấy key rồi -> Hiển thị lại ngay không trừ thêm lượt
     if (savedKey) {
       showKey(savedKey);
-    } else {
-      // Kiểm tra giới hạn trước khi gọi Google Sheets
+    } 
+    // 2. Tự động kiểm tra giới hạn và lấy key từ Google Sheets
+    else {
       if (!checkAndRecordLimit()) {
         statusEl.innerHTML = `<span style="color: #ff6b6b;">⚠️ Bạn đã đạt giới hạn lấy tối đa 2 key trong ngày hôm nay! Vui lòng quay lại vào ngày mai.</span>`;
         homeBtn.style.display = "block";
       } else {
-        // Gọi Google Sheets lấy key mới
+        // Gọi Google Apps Script lấy key mới (đã gỡ phần check token bắt buộc)
         fetch(`${APPS_SCRIPT_URL}?action=get_key`)
           .then(res => res.json())
           .then(data => {
